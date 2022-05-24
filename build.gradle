@@ -1,0 +1,79 @@
+buildscript {
+  ext {
+    localversions = [
+        es : "7.14.1"
+    ]
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "org.elasticsearch.gradle:build-tools:${localversions.es}"
+  }
+}
+
+plugins {
+  id 'java-library'
+  id 'idea'
+  id 'com.diffplug.spotless' version "5.8.2" apply false
+}
+
+apply plugin: 'elasticsearch.esplugin'
+// apply plugin: 'elasticsearch.java-rest-test'
+// apply plugin: 'elasticsearch.yaml-rest-test'
+
+apply from: file('gradle/validation/spotless.gradle')
+
+// This plugin's version (typically must match that of ES).
+// For bugfix releases against the same ES version, you can add a bugfix suffix.
+def bugfix = ""
+version = "${localversions.es}${bugfix}"
+group = 'org.nairu'
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+esplugin {
+  name 'elasticsearch-kmeans'
+  description "Search results clustering plugin for Elasticsearch ${localversions.es})"
+  classname 'org.nairu.elasticsearch.KMeansClusteringPlugin'
+}
+
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+
+  // Let the javaRestTest see the classpath of main and tests.
+  // javaRestTestImplementation project.sourceSets.main.runtimeClasspath
+  // javaRestTestImplementation project.sourceSets.test.runtimeClasspath
+
+  // TODO: ES 7.10.0 hack: missing log4j classes?
+  // yamlRestTestImplementation "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+}
+
+sourceSets {
+  test {
+    java {
+      include '**'
+    }
+  }
+}
+
+test {
+  useJUnitPlatform()
+  classpath = project.sourceSets.test.runtimeClasspath + files("${projectDir}/test")
+}
+
+// Set target compatibility
+sourceCompatibility = 11
+targetCompatibility = 11
+
+// We don't have unit tests, only integration tests.
+test.enabled = true
+
+// Configure publishing.
+apply from: file('gradle/publishing.gradle')
+
