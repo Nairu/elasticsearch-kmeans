@@ -6,25 +6,29 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.nairu.elasticsearch.model.Centroid;
+import org.nairu.elasticsearch.model.IClusterAlgorithm;
 import org.nairu.elasticsearch.model.IDistance;
 import org.nairu.elasticsearch.model.Point;
 import org.nairu.elasticsearch.model.Record;
 
-public class KMeansAlgorithm {
+public class KMeansAlgorithm implements IClusterAlgorithm {
     private final Random random;
     private final int maxIterations;
+    private final int k;
 
-    public KMeansAlgorithm(int maxIterations) {
+    public KMeansAlgorithm(int maxIterations, int k) {
         this.random = new Random();
         this.maxIterations = maxIterations;
+        this.k = k;
     }
 
-    public KMeansAlgorithm(int maxIterations, Random random) {
+    public KMeansAlgorithm(int maxIterations, Random random, int k) {
         this.random = random;
         this.maxIterations = maxIterations;
+        this.k = k;
     }
 
-    public List<Centroid> fit(List<Record> records, int k, IDistance distance) {
+    public List<Centroid> fit(List<Record> records, IDistance distance) {
         List<Centroid> centroids = getInitialCentroids(records, k);
         List<Centroid> lastState = new ArrayList<>();
 
