@@ -43,8 +43,8 @@ public class Centroid {
         if (getAssociatedRecords().isEmpty())
             return this;
 
-        int avgX = 0;
-        int avgY = 0;
+        float avgX = 0;
+        float avgY = 0;
         for (Record record : getAssociatedRecords()) {
             avgX += record.getLocation().getX();
             avgY += record.getLocation().getY();

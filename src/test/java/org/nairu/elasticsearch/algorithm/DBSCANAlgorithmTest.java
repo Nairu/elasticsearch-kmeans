@@ -21,7 +21,7 @@ public class DBSCANAlgorithmTest {
     public void testRecursiveFind() {
         Random random = new Random(0);
 
-        DBSCANAlgorithm k = new DBSCANAlgorithm(10, 10, 100, 10);
+        DBSCANAlgorithm k = new DBSCANAlgorithm(10, 7, 100, 10);
         List<Point> seeds = Arrays.asList(new Point(5, 5),
             new Point(30, 25),
             new Point(30, 55),
@@ -34,6 +34,9 @@ public class DBSCANAlgorithmTest {
         if (neighbours.size() > 0) {
             System.out.println("Average cluster size: " + neighbours.stream().map(c -> c.getAssociatedRecords().size()).reduce(0, (a, b) -> a + b) / neighbours.size());
             System.out.println("Biggest cluster size: " + neighbours.stream().map(c -> c.getAssociatedRecords().size()).reduce(0, (a, b) -> a > b ? a : b));
+            for (Centroid c : neighbours) {
+                System.out.println(String.format("Centroid[%f,%f] - %d", c.getLocation().getX(), c.getLocation().getY(), c.getAssociatedRecords().size()));
+            }
         }
         Assertions.assertEquals(seeds.size(), neighbours.size());
     }
