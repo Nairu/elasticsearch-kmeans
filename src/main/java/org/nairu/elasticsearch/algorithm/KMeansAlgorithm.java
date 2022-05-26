@@ -52,24 +52,7 @@ public class KMeansAlgorithm implements IClusterAlgorithm {
     }
 
     private List<Centroid> recalculateCentroidCenters(List<Centroid> centroids) {
-        return centroids.stream().map(KMeansAlgorithm::calculateNewCenter).collect(Collectors.toList());
-    }
-
-    // This is static so it can be used in the map above.
-    private static Centroid calculateNewCenter(Centroid centroid) {
-        if (centroid.getAssociatedRecords().isEmpty())
-            return centroid;
-
-        int avgX = 0;
-        int avgY = 0;
-        for (Record record : centroid.getAssociatedRecords()) {
-            avgX += record.getLocation().getX();
-            avgY += record.getLocation().getY();
-        }
-
-        int numRecords = centroid.getAssociatedRecords().size();
-
-        return new Centroid(new Point(avgX / numRecords, avgY / numRecords));
+        return centroids.stream().map(c -> c.calculateNewCenter(false)).collect(Collectors.toList());
     }
 
     private void calculateNearestCentroid(Record record, List<Centroid> centroids, IDistance distance) {

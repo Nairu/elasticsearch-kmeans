@@ -37,4 +37,21 @@ public class Centroid {
     public void setLocation(Point location) {
         this.location = location;
     }
+
+    // This is static so it can be used in the map above.
+    public Centroid calculateNewCenter(boolean keepRecords) {
+        if (getAssociatedRecords().isEmpty())
+            return this;
+
+        int avgX = 0;
+        int avgY = 0;
+        for (Record record : getAssociatedRecords()) {
+            avgX += record.getLocation().getX();
+            avgY += record.getLocation().getY();
+        }
+
+        int numRecords = getAssociatedRecords().size();
+
+        return new Centroid(new Point(avgX / numRecords, avgY / numRecords), keepRecords ? getAssociatedRecords() : new ArrayList<>());
+    }
 }
